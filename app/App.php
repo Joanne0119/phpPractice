@@ -29,8 +29,23 @@ function getTransaction(string $fileName): array { // read csv file and return d
 
     //read every line of csv data, each line  of data will save in $transactions[]
     while (($transaction = fgetcsv($file)) !== false) { 
-        $transactions[] = $transaction;
+        $transactions[] = extractTransactions($transaction);
     }
 
     return $transactions;
+}
+
+function extractTransactions(array $transactionRow): array // make data readable(remove amount $ and , and convert to float)
+{
+    [$date, $checkNumber, $description, $amount] = $transactionRow;
+
+    $amount = (float) str_replace(['$', ','], '', $amount); // remove $ and , and convert to float
+
+    return [
+        'date' => $date,
+        'checkNumber' => $checkNumber,
+        'description' => $description,
+        'amount' => $amount
+    ];
+
 }

@@ -17,3 +17,4 @@ foreach ($files as $file) {
     $transactions = array_merge($transactions, getTransaction($file));
 }
 
+require VIEWS_PATH . 'transactions.php';
