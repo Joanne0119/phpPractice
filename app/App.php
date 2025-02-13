@@ -16,7 +16,7 @@ function getTransactionFiles(string $dirPath): array  // get all files path
     return $files;
 }
 
-function getTransaction(string $fileName): array { // read csv file and return data
+function getTransaction(string $fileName, ?callable $transactionHandler = null): array { // read csv file and return data
     if(! file_exists($fileName)) { // check the file exist or not
         trigger_error("File $fileName does not exist", E_USER_ERROR);
     }
@@ -29,7 +29,10 @@ function getTransaction(string $fileName): array { // read csv file and return d
 
     //read every line of csv data, each line  of data will save in $transactions[]
     while (($transaction = fgetcsv($file)) !== false) { 
-        $transactions[] = extractTransactions($transaction);
+        if($transactionHandler !== null) {
+            $transaction = $transactionHandler($transaction);
+        }
+        $transactions[] = $transaction;
     }
 
     return $transactions;
@@ -48,4 +51,21 @@ function extractTransactions(array $transactionRow): array // make data readable
         'amount' => $amount
     ];
 
+}
+
+function caclulateTotal(array $transactions): array {
+    $totals = [ 'netTotal' => 0, 'incomeTotal' => 0, 'expenseTotal' => 0];
+
+    foreach ($transactions as $transaction) {
+        $totals['netTotal'] += $transaction['amount'];
+
+        if($transaction['amount'] >= 0) {
+            $totals['incomeTotal'] += $transaction['amount'];
+        }
+        else {
+            $totals['expenseTotal'] += $transaction['amount'];
+        }
+    }
+
+    return $totals;
 }
