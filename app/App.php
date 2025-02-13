@@ -53,7 +53,7 @@ function extractTransactions(array $transactionRow): array // make data readable
 
 }
 
-function caclulateTotal(array $transactions): array {
+function calculateTotal(array $transactions): array {
     $totals = [ 'netTotal' => 0, 'incomeTotal' => 0, 'expenseTotal' => 0];
 
     foreach ($transactions as $transaction) {
